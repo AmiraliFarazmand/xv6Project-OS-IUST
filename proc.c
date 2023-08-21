@@ -532,3 +532,56 @@ procdump(void)
     cprintf("\n");
   }
 }
+
+
+// created processes list to store sorted list of processes.(like ptable struct in line 10.)
+struct {
+  struct proc2 r_processes[NPROC];
+  int num;
+}processes_list ;
+
+// current processes status(shows running and runnable processes sorted by their memory size.-)
+int cps()
+{
+  struct proc *p;
+  struct proc2 p_tmp; 
+  processes_list.num = 0;
+  int i,j ;
+  sti();
+
+  acquire(&ptable.lock);
+
+  for (p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+  {
+    if (p->state == RUNNING || p->state == RUNNABLE){
+      processes_list.r_processes[processes_list.num].pid = p->pid; 
+      processes_list.r_processes[processes_list.num].sz = p->sz;
+      processes_list.r_processes[processes_list.num].state = p->state;
+      processes_list.num ++;
+    } 
+  }
+  // sort process list with bubble sort.
+  for (i = 0; i < processes_list.num-1; i++)
+  {
+    for (j = 0; j < processes_list.num-1; j++)
+    {
+      if (j<i && ((processes_list.r_processes[i].sz > processes_list.r_processes[j].sz)||
+      (processes_list.r_processes[i].pid < processes_list.r_processes[j].pid)) ){           //swap
+        p_tmp =  processes_list.r_processes[j];
+        processes_list.r_processes[j] = processes_list.r_processes[i];
+        processes_list.r_processes[i] =p_tmp;
+       }
+
+    }
+  }  
+
+  cprintf("pid:\t state:\t MEMsize:\t \n=========================\n");
+  for (int i =0 ; i < processes_list.num ; i++) 
+  {
+    cprintf("%d\t %d\t %d\t \n", processes_list.r_processes[i].pid, processes_list.r_processes[i].state, processes_list.r_processes[i].sz);
+    cprintf("-------------------------\n");
+  }
+  release(&ptable.lock);
+
+  return 88;
+}

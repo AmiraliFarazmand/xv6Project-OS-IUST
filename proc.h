@@ -51,6 +51,14 @@ struct proc {
   char name[16];               // Process name (debugging)
 };
 
+// Proc 2 is used for deviding RUNNNING and RUNABLE processes from SLEEPING ones.
+struct proc2 {
+  int pid;                     // Process ID
+  int sz;                      // a variable for sorting processes. Stores MEMORY size of each process. 
+  enum procstate state;        // Process state
+
+};
+
 // Process memory is laid out contiguously, low addresses first:
 //   text
 //   original data and bss
