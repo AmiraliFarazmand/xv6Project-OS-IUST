@@ -1,4 +1,3 @@
-# OS-IUST
 This is project for Operating System course at IUST.
 
 For a detailed description of the problem, please visit [this document](https://github.com/AmiraliFarazmand/xv6Project-OS-IUST/blob/master/OS_P1.pdf).
